@@ -14,3 +14,11 @@ def retrieve(request, pk):
     post.save()
     context = {'post': post}
     return render(request, 'blog/view.html', context)
+
+
+def reqister(request):
+    pass
+
+
+def login(request):
+    return render(request, 'blog/login.html')

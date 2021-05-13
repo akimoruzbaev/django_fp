@@ -15,3 +15,14 @@ Run project
 ```python
 python manage.py runserver
 ```
+
+### Задание
+Примеры по формам - https://getbootstrap.com/docs/5.0/forms/form-control/
+- Добавить страницу регистрации
+    - имя пользователя (логин)
+    - Пароль
+    - first name
+    - last name
+    - email
+    - Кнопка "Зарегистрироваться"
+    - Уже зарегистрированы? Login

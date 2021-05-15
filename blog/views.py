@@ -1,9 +1,13 @@
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 from django.shortcuts import render, get_object_or_404
 from .models import Post
-from .forms import LoginForm
+from .forms import LoginForm, RegisterForm
+from django.http import HttpResponseRedirect
 
 
 def index(request):
+    print(request.user)
     post_list = Post.objects.all()
     context = {'post_list': post_list}
     return render(request, 'blog/index.html', context)
@@ -18,15 +22,30 @@ def retrieve(request, pk):
 
 
 def reqister(request):
-    return render(request, 'blog/register.html')
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = User.objects.create_user(form.cleaned_data['username'],
+                                            form.cleaned_data['email'],
+                                            form.cleaned_data['password'])
+            user.last_name = form.cleaned_data['lastName']
+            user.first_name = form.cleaned_data['firstName']
+            user.save()
+    else:
+        form = RegisterForm()
+
+    return render(request, 'blog/register.html', {'form': form})
 
 
-def login(request):
+def loginView(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
-        # if form.is_valid():
-        #     return HttpResponseRedirect('/thanks/')
-        print(form.cleaned_data)
+        if form.is_valid():
+            user = authenticate(username=form.cleaned_data['username'],
+                                password=form.cleaned_data['password'])
+            if user is not None:
+                login(request, user)
+                return HttpResponseRedirect('/')
     else:
         form = LoginForm()
 

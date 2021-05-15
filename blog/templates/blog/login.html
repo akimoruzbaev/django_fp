@@ -7,6 +7,26 @@
 {% block body %}
 
 <main class="form-signin" style="width: 100%;max-width: 330px;padding: 15px;margin: auto;">
+
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="form-floating">
+      {{ form.username.errors }}
+      {{ form.username }}
+      <label for="{{ form.username.id_for_label }}">Username</label>
+    </div>
+
+    <div class="form-floating">
+      {{ form.password.errors }}
+      {{ form.password }}
+      <label for="{{ form.password.id_for_label }}">Password</label>
+    </div>
+
+<!--    {{ form }}-->
+    <input type="submit" value="Submit">
+  </form>
+
   <form>
     <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
@@ -21,7 +41,7 @@
 
     <div class="mb-3 mt-3">
       <label>
-          Еще не зарегистрированы? <a href="#">Register</a>
+          Еще не зарегистрированы? <a href="/register">Register</a>
       </label>
     </div>
     <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>

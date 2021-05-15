@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Post
+from .forms import LoginForm
 
 
 def index(request):
@@ -17,8 +18,17 @@ def retrieve(request, pk):
 
 
 def reqister(request):
-    pass
+    return render(request, 'blog/register.html')
 
 
 def login(request):
-    return render(request, 'blog/login.html')
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        # if form.is_valid():
+        #     return HttpResponseRedirect('/thanks/')
+        print(form.cleaned_data)
+    else:
+        form = LoginForm()
+
+    return render(request, 'blog/login.html', {'form': form})
+

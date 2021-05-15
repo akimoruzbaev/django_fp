@@ -15,8 +15,10 @@ class LoginForm(forms.Form):
     username = forms.CharField(
         label='Username',
         max_length=100,
-        widget=forms.TextInput(attrs=attrsFirst))
+        widget=forms.TextInput(attrs=attrsFirst)
+    )
     password = forms.CharField(
         label='Password',
         max_length=64,
-        widget=forms.PasswordInput(attrs=attrsLast))
+        widget=forms.PasswordInput(attrs=attrsLast)
+    )

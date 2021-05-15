@@ -1,13 +1,7 @@
 from django import forms
 
-attrsFirst = {
-    'class': "form-control",
-    'style': "margin-bottom: -1px;border-bottom-right-radius: 0;border-bottom-left-radius: 0;"
-}
-
-attrsLast = {
-    'class': "form-control",
-    'style': "margin-bottom: 10px;border-top-left-radius: 0;border-top-right-radius: 0;"
+inputAttrs = {
+    'class': "form-control"
 }
 
 
@@ -15,10 +9,18 @@ class LoginForm(forms.Form):
     username = forms.CharField(
         label='Username',
         max_length=100,
-        widget=forms.TextInput(attrs=attrsFirst)
+        widget=forms.TextInput(attrs=inputAttrs)
     )
     password = forms.CharField(
         label='Password',
         max_length=64,
-        widget=forms.PasswordInput(attrs=attrsLast)
+        widget=forms.PasswordInput(attrs=inputAttrs)
     )
+
+
+class RegisterForm(forms.Form):
+    username = forms.CharField(widget=forms.TextInput(attrs=inputAttrs))
+    password = forms.CharField(widget=forms.PasswordInput(attrs=inputAttrs))
+    firstName = forms.CharField(widget=forms.TextInput(attrs=inputAttrs))
+    lastName = forms.CharField(widget=forms.TextInput(attrs=inputAttrs))
+    email = forms.CharField(widget=forms.EmailInput(attrs=inputAttrs))

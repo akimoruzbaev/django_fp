@@ -7,33 +7,11 @@
 {% block body %}
 
 <main class="form-signin" style="width: 100%;max-width: 330px;padding: 15px;margin: auto;">
-    <form>
+
+    <form method="post">
+        {% csrf_token %}
         <h1 class="h3 mb-3 fw-normal">Please sign up</h1>
-
-        <div class="form-floating">
-            <input type="text" class="form-control" id="Username" placeholder="name@example.com" style="margin-bottom: -1px;border-bottom-right-radius: 0;border-bottom-left-radius: 0;">
-            <label for="Username">Username</label>
-        </div>
-
-        <div class="form-floating">
-            <input type="password" class="form-control" id="floatingPassword" placeholder="Password" style="border-radius: 0; margin-bottom: -1px;">
-            <label for="floatingPassword">Password</label>
-        </div>
-
-        <div class="form-floating">
-            <input type="text" class="form-control" id="FirstName" placeholder="Password" style="border-radius: 0; margin-bottom: -1px;">
-            <label for="FirstName">First Name</label>
-        </div>
-
-        <div class="form-floating">
-            <input type="text" class="form-control" id="LastName" placeholder="Password" style="border-radius: 0; margin-bottom: -1px;">
-            <label for="LastName">Last Name</label>
-        </div>
-
-        <div class="form-floating">
-            <input type="email" class="form-control" id="EmailAddress" placeholder="Password" style="margin-bottom: 10px;border-top-left-radius: 0;border-top-right-radius: 0;">
-            <label for="EmailAddress">Email address</label>
-        </div>
+        {{ form }}
 
         <div class="mb-3 mt-3">
           <label>
@@ -43,6 +21,7 @@
 
         <button class="w-100 btn btn-lg btn-primary" type="submit">Sign up</button>
     </form>
+
 </main>
 
 {% endblock %}

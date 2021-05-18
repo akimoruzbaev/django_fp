@@ -1,13 +1,12 @@
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, get_object_or_404
-from .models import Post
-from .forms import LoginForm, RegisterForm
+from .models import Post, Comment
+from .forms import LoginForm, RegisterForm, CommentForms
 from django.http import HttpResponseRedirect
 
 
 def index(request):
-    print(request.user)
     post_list = Post.objects.all()
     context = {'post_list': post_list}
     return render(request, 'blog/index.html', context)
@@ -17,7 +16,21 @@ def retrieve(request, pk):
     post = get_object_or_404(Post, id=pk)
     post.views += 1
     post.save()
-    context = {'post': post}
+
+    if request.method == 'POST':
+        form = CommentForms(request.POST)
+        if form.is_valid():
+            instance = Comment()
+            instance.owner = request.user
+            instance.post = post
+            instance.text = form.cleaned_data['text']
+            instance.save()
+    else:
+        form = CommentForms()
+
+    comments = Comment.objects.filter(post=pk)
+
+    context = {'post': post, 'form': form, 'comments': comments}
     return render(request, 'blog/view.html', context)
 
 

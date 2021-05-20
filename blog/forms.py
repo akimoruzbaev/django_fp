@@ -24,3 +24,8 @@ class RegisterForm(forms.Form):
     firstName = forms.CharField(widget=forms.TextInput(attrs=inputAttrs))
     lastName = forms.CharField(widget=forms.TextInput(attrs=inputAttrs))
     email = forms.CharField(widget=forms.EmailInput(attrs=inputAttrs))
+
+
+class CommentForms(forms.Form):
+    # text = forms.Textarea()
+    text = forms.CharField(widget=forms.Textarea(attrs=inputAttrs))

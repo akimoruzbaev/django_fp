@@ -78,3 +78,12 @@ def search(request):
         form = LoginForm()
 
     return render(request, 'blog/search.html', {'form': form})
+
+def user(request, pk):
+    user = get_object_or_404(User, id=pk)
+    posts = Post.objects.filter(owner = pk)
+    context = {
+        'user':user,
+        'posts':posts,
+    }
+    return render(request, 'blog/user.html', context)

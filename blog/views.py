@@ -72,18 +72,9 @@ def search(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/login')
 
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            user = authenticate(username=form.cleaned_data['username'],
-                                password=form.cleaned_data['password'])
-            if user is not None:
-                login(request, user)
-                return HttpResponseRedirect('/')
-    else:
-        form = LoginForm()
+    print(request.GET.get('query'))
 
-    return render(request, 'blog/search.html', {'form': form})
+    return render(request, 'blog/search.html')
 
 
 def add_post(request):

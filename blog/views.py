@@ -79,6 +79,21 @@ def search(request):
 
     return render(request, 'blog/search.html', {'form': form})
 
+
+def add_post(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user = authenticate(username=form.cleaned_data['username'],
+                                password=form.cleaned_data['password'])
+            if user is not None:
+                login(request, user)
+                return HttpResponseRedirect('/')
+    else:
+        form = LoginForm()
+
+    return render(request, 'blog/add_post.html', {'form': form})
+
 def user(request, pk):
     user = get_object_or_404(User, id=pk)
     posts = Post.objects.filter(owner = pk)
@@ -87,3 +102,4 @@ def user(request, pk):
         'posts':posts,
     }
     return render(request, 'blog/user.html', context)
+

@@ -16,7 +16,6 @@ def retrieve(request, pk):
     post = get_object_or_404(Post, id=pk)
     post.views += 1
     post.save()
-
     if request.method == 'POST':
         form = CommentForms(request.POST)
         if form.is_valid():
@@ -87,3 +86,6 @@ def user(request, pk):
         'posts':posts,
     }
     return render(request, 'blog/user.html', context)
+
+def error_404(request,exception):
+    return render(request, 'blog/404.html')

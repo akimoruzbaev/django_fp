@@ -79,6 +79,7 @@ def search(request):
 
     return render(request, 'blog/search.html', {'form': form})
 
+
 def add_post(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -92,3 +93,13 @@ def add_post(request):
         form = LoginForm()
 
     return render(request, 'blog/add_post.html', {'form': form})
+
+def user(request, pk):
+    user = get_object_or_404(User, id=pk)
+    posts = Post.objects.filter(owner = pk)
+    context = {
+        'user':user,
+        'posts':posts,
+    }
+    return render(request, 'blog/user.html', context)
+

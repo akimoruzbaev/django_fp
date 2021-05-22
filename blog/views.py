@@ -1,8 +1,9 @@
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+# from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from .models import Post, Comment
-from .forms import LoginForm, RegisterForm, CommentForms
+from .forms import LoginForm, RegisterForm, CommentForms, NewPostForm
 from django.http import HttpResponseRedirect
 
 
@@ -13,6 +14,9 @@ def index(request):
 
 
 def retrieve(request, pk):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/login')
+
     post = get_object_or_404(Post, id=pk)
     post.views += 1
     post.save()
@@ -65,6 +69,9 @@ def loginView(request):
 
 
 def search(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/login')
+
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -80,21 +87,31 @@ def search(request):
 
 
 def add_post(request):
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            user = authenticate(username=form.cleaned_data['username'],
-                                password=form.cleaned_data['password'])
-            if user is not None:
-                login(request, user)
-                return HttpResponseRedirect('/')
-    else:
-        form = LoginForm()
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/login')
 
-    return render(request, 'blog/add_post.html', {'form': form})
+    fix_me = ""
+
+    if request.method == 'POST':
+        form = NewPostForm(request.POST)
+        if form.is_valid():
+            post = Post()
+            post.owner = request.user
+            post.title = form.cleaned_data['title']
+            post.clipped_text = form.cleaned_data['clipped_text']
+            post.text = form.cleaned_data['text']
+            post.save()
+            fix_me = "Запись успешно добавлена"
+    else:
+        form = NewPostForm()
+
+    return render(request, 'blog/add_post.html', {'form': form, 'msg': fix_me})
 
 
 def user(request, pk):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/login')
+
     user = get_object_or_404(User, id=pk)
     posts = Post.objects.filter(owner = pk)
     context = {

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 # from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from .models import Post, Comment
 from .forms import LoginForm, RegisterForm, CommentForms, NewPostForm
@@ -72,9 +73,14 @@ def search(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/login')
 
-    print(request.GET.get('query'))
+    if request.GET.get('query') is None:
+        return render(request, 'blog/search.html')
 
-    return render(request, 'blog/search.html')
+    res = Post.objects.filter(Q(title__icontains=request.GET.get('query')) |
+                              Q(clipped_text__icontains=request.GET.get('query')) |
+                              Q(text__icontains=request.GET.get('query')))
+    return render(request, 'blog/search.html', {'result': res})
+
 
 
 def add_post(request):

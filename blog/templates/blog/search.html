@@ -6,39 +6,16 @@
 
 
         <form method="get" class="d-flex mb-5" >
-          <input class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search">
-          <input class="form-control me-2" type="search" name="bekkazy" placeholder="Search" aria-label="Search">
+          <input class="form-control me-2" value="{{request.GET.query}}" type="search" name="query" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
 
-    {% if post_list %}
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-            {% for post in post_list %}
-            <div class="col">
-                <div class="card">
-                    <img src="..." class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ post.title }}</h5>
-                        <p class="card-text">{{ post.clipped_text }}</p>
-                        <a href="/view/{{ post.id }}" class="btn btn-primary">Read...</a>
-                    </div>
-                </div>
-            </div>
+    {% if result %}
+        <div class="list-group">
+            {% for res in result %}
+                <a href="/view/{{res.id}}" class="list-group-item list-group-item-action">{{res.title}}</a>
             {% endfor %}
         </div>
-    {% else %}
-
-            <div class="list-group">
-
-              <a href="#" class="list-group-item list-group-item-action" aria-current="true">
-                The current link item
-              </a>
-              <a href="#" class="list-group-item list-group-item-action">A second link item</a>
-              <a href="#" class="list-group-item list-group-item-action">A third link item</a>
-              <a href="#" class="list-group-item list-group-item-action">A fourth link item</a>
-              <a href="#" class="list-group-item list-group-item-action disabled" tabindex="-1" aria-disabled="true">A disabled link item</a>
-            </div>
-
-
     {% endif %}
+
 {% endblock %}

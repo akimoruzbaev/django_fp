@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login
 # from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
-from .models import Post, Comment
+from .models import Post, Comment, Categories
 from .forms import LoginForm, RegisterForm, CommentForms, NewPostForm
 from django.http import HttpResponseRedirect
 
@@ -32,9 +32,10 @@ def retrieve(request, pk):
     else:
         form = CommentForms()
 
+    categories = Categories.objects.all()
     comments = Comment.objects.filter(post=pk)
 
-    context = {'post': post, 'form': form, 'comments': comments}
+    context = {'post': post, 'form': form, 'comments': comments, 'categories': categories}
     return render(request, 'blog/view.html', context)
 
 

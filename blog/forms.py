@@ -1,4 +1,6 @@
 from django import forms
+from .models import Post
+
 
 inputAttrs = {
     'class': "form-control"
@@ -27,11 +29,19 @@ class RegisterForm(forms.Form):
 
 
 class CommentForms(forms.Form):
-    # text = forms.Textarea()
     text = forms.CharField(widget=forms.Textarea(attrs=inputAttrs))
 
 
-class NewPostForm(forms.Form):
-    title = forms.CharField(max_length=250, widget=forms.TextInput(attrs=inputAttrs))
-    clipped_text = forms.CharField(max_length=150, widget=forms.Textarea(attrs=inputAttrs))
-    text = forms.CharField(widget=forms.Textarea(attrs=inputAttrs))
+class NewPostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'clipped_text', 'text']
+        widgets = {
+            'clipped_text': forms.Textarea(attrs={'rows': 3}),
+        }
+
+
+class RatePostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['rating_sum']

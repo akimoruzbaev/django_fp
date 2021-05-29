@@ -1,10 +1,9 @@
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
-# from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
-from .models import Post, Comment, Categories
-from .forms import LoginForm, RegisterForm, CommentForms, NewPostForm
+from .models import Post, Comment, Categories, Rate
+from .forms import LoginForm, RegisterForm, CommentForms, NewPostForm, RatePostForm
 from django.http import HttpResponseRedirect
 
 
@@ -18,6 +17,7 @@ def retrieve(request, pk):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/login')
 
+    rate = 0
     post = get_object_or_404(Post, id=pk)
     post.views += 1
     post.save()
@@ -30,13 +30,44 @@ def retrieve(request, pk):
             instance.text = form.cleaned_data['text']
             instance.save()
     else:
+        r = Rate.objects.filter(post=pk).count()
+        if r > 0:
+            rate = post.rating_sum / r
+
         form = CommentForms()
 
+    rate_form = RatePostForm()
     categories = Categories.objects.all()
     comments = Comment.objects.filter(post=pk)
 
-    context = {'post': post, 'form': form, 'comments': comments, 'categories': categories}
+    context = {
+        'post': post,
+        'form': form,
+        'comments': comments,
+        'rate': rate,
+        'rate_form': rate_form,
+        'categories': categories
+    }
     return render(request, 'blog/view.html', context)
+
+
+def rate(request, pk):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/login')
+
+    post = get_object_or_404(Post, id=pk)
+
+    if request.method == 'POST':
+        form = RatePostForm(request.POST)
+        if form.is_valid():
+            try:
+                r = Rate(owner=request.user, post=post)
+                r.save()
+                post.rating_sum = post.rating_sum + form.cleaned_data['rating_sum']
+                post.save()
+            except BaseException as e:
+                pass
+    return HttpResponseRedirect(f'/view/{pk}/')
 
 
 def reqister(request):

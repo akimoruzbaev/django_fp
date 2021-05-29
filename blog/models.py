@@ -16,10 +16,19 @@ class Post(models.Model):
     clipped_text = models.TextField(max_length=150)
     text = models.TextField()
     created_at = models.DateTimeField(auto_now=True)
+    rating_sum = models.IntegerField(default=0)
     views = models.IntegerField(default=0)
 
     def __str__(self):
         return f'{self.id} - {self.title}'
+
+
+class Rate(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = [['owner', 'post']]
 
 
 class Comment(models.Model):

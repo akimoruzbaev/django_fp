@@ -5,12 +5,44 @@ from django.shortcuts import render, get_object_or_404
 from .models import Post, Comment, Categories, Rate
 from .forms import LoginForm, RegisterForm, CommentForms, NewPostForm, RatePostForm
 from django.http import HttpResponseRedirect
+from django.views.generic import ListView, DetailView, FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+
+class IndexView(ListView):
+    model = Post
+    paginate_by = 2
+    template_name = 'blog/index.html'
 
 
 def index(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/login')
+
     post_list = Post.objects.all()
     context = {'post_list': post_list}
     return render(request, 'blog/index.html', context)
+
+
+class RetrieveView(DetailView, FormView, LoginRequiredMixin):
+    model = Post
+    template_name = 'blog/view.html'
+    form_class = CommentForms
+
+    def get_context_data(self, **kwargs):
+        pk = self.kwargs['pk']
+        context = super().get_context_data(**kwargs)
+        context['rate_form'] = RatePostForm()
+        rate = 0
+        r = Rate.objects.filter(post=pk).count()
+        if r > 0:
+            rate = self.object.rating_sum / r
+        context['rate'] = rate
+
+        self.object.views += 1
+        self.object.save()
+
+        return context
 
 
 def retrieve(request, pk):
@@ -114,7 +146,6 @@ def search(request):
     return render(request, 'blog/search.html', {'result': res})
 
 
-
 def add_post(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/login')
@@ -150,5 +181,5 @@ def user(request, pk):
     return render(request, 'blog/user.html', context)
 
 
-def error_404(request,exception):
+def error_404(request, exception):
     return render(request, 'blog/404.html')
